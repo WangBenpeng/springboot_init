@@ -24,13 +24,13 @@ import java.util.ResourceBundle;
 public class MyExceptionHandler implements ResponseBodyAdvice<Object> {
 
     @ExceptionHandler(MyException.class)
-    public Result handleMyException(HttpServletRequest req, HttpServletResponse resp, MyException e) {
+    public Result<String> handleMyException(HttpServletRequest req, HttpServletResponse resp, MyException e) {
         String msg = ResourceBundle.getBundle("messages", req.getLocale()).getString(e.getCode());
         return Result.error(e.getCode(), msg);
     }
 
     @ExceptionHandler(Exception.class)
-    public Result handleException(Exception e) {
+    public Result<String> handleException(Exception e) {
         return Result.error(e.getMessage());
     }
 
@@ -40,9 +40,10 @@ public class MyExceptionHandler implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Result beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (body instanceof Result)
-            return (Result) body;
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        if (body instanceof Result) {
+            return body;
+        }
         return Result.success(ResourceBundle.getBundle("messages", ((ServletServerHttpRequest) request).getServletRequest().getLocale()).getString(ErrorCode.OK), body);
     }
 }

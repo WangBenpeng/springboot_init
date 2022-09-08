@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @PostMapping("/say")
     public Result<String> say() {
-        return Result.success("操作成功！","Hello, I'm Springboot!");
+        return Result.success("操作成功！", "Hello, I'm Springboot!");
     }
 
     @PostMapping("/user")
@@ -36,6 +36,10 @@ public class HelloController {
         throw new MyException(ErrorCode.ERROR);
     }
 
+    @PostMapping("/string")
+    public String string() {
+        return "Hello,I'm String.";
+    }
 }
 
 class User{
