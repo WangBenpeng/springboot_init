@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <!-- https://github.com/spring-projects/spring-boot/blob/v1.4.2.RELEASE/spring-boot/src/main/resources/org/springframework/boot/logging/logback/defaults.xml -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty scope="context" name="appName" source="spring.application.name"/>
+    <property name="ENCODING" value="UTF-8"/>
+    <property name="LOG_PATH" value="/logs/springboot_init"/>
+    <property name="LOG_PATTERN_COLOR"
+              value="[%X{TRACE_ID}] [%X{USER_NAME}] ${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS}]|[${LOG_LEVEL_PATTERN:-%5p}]|[${PID:- }]|[%t]|[%X{TRACE_ID}]|[%X{USER_NAME}]|[%-40.40logger{39}:%L]|[%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <appender name="DEBUG"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/debug.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/debug.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="APP"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/app.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="APP_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="PROCESS_STATISTIC"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/exec-process-statistic.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/exec-process-statistic.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="PROCESS_DETAIL"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/exec-process-detail.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/exec-process-detail.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ASYNC_DEBUG" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>-1</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="DEBUG"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <appender name="ASYNC_APP" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>-1</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="APP"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <appender name="ASYNC_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 默认情况下，当blockingQueue的容量高于阈值时（80%），会丢弃ERROR以下级别的日志，
+        如果不希望丢弃日志（既每次都是全量保存），那可以设置为0，但是如果队列满的时候，会丢弃所有插入队列的日志信息，所以建议设置为-1（默认值）。
+         如正常日志可以丢弃，那可以极大的提升性能，并保存关键的ERROR日志。 -->
+        <discardingThreshold>-1</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="APP_ERROR"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>-1</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="CONSOLE"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <appender name="ASYNC_PROCESS_STATISTIC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>-1</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="PROCESS_STATISTIC"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <appender name="ASYNC_PROCESS_DETAIL" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>-1</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="PROCESS_DETAIL"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <logger name="execProcessStatisticLog" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_PROCESS_STATISTIC"/>
+    </logger>
+    <logger name="execProcessDetailLog" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_PROCESS_DETAIL"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="ASYNC_DEBUG"/>
+        <appender-ref ref="ASYNC_APP"/>
+        <appender-ref ref="ASYNC_ERROR"/>
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </root>
+
+</configuration>
